@@ -7,9 +7,9 @@ import com.hoxy.hoxymall.dto.UpdateProduct;
 import com.hoxy.hoxymall.entity.Product;
 import com.hoxy.hoxymall.repository.ProductRepository;
 import com.hoxy.hoxymall.util.SkuGenerator;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,14 +22,13 @@ public class ProductService {
 
     private final ProductRepository repo;
 
-    @Autowired
-    private ModelMapper modelMapper;
-    public Product addProduct(AddProduct addProduct) {
+    private final ModelMapper modelMapper;
+    public void addProduct(AddProduct addProduct) {
         Product product = modelMapper.map(addProduct, Product.class);
         String sku = SkuGenerator.generateSku(8);
         product.setSku(sku);
         product.setCreatedDate(LocalDateTime.now());
-        return repo.save(product);
+        repo.save(product);
     }
 
     public List<ProductListDTO> showProduct() {
@@ -76,7 +75,10 @@ public class ProductService {
     }
 
     public void updateProduct(Long id, UpdateProduct updateProduct) {
-        Product product = repo.findById(id).orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다"));
+        Product product = repo.findByProductId(id);
+        if (product == null) {
+            throw new EntityNotFoundException("해당 상품이 존재하지 않습니다.");
+        }
 
         product.setProductName(updateProduct.getProductName());
         product.setDescription(updateProduct.getDescription());
