@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <!-- 뷰포트 설정 -->
+    <title>제품 상세 정보</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- 부트스트랩 CSS -->
+</head>
+<body>
+<div class="container mt-5">
+    <h1 th:text="${product.productName}">제품 이름</h1>
+    <div class="card mb-3">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img th:src="${product.imgUrl}" class="card-img" alt="제품 이미지" style="width: 100%; height: auto;">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${product.productName}">제품 이름</h5>
+                    <p class="card-text" th:text="${product.description}">제품 설명</p>
+                    <p class="card-text"><strong>가격:</strong> <span th:text="${product.price}">가격</span> 원</p>
+                    <p class="card-text"><strong>카테고리:</strong> <span th:text="${product.category}">카테고리</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="/products" class="btn btn-primary">목록으로 돌아가기</a>
+</div>
+
+<!-- 부트스트랩 JS 및 의존성(옵션) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

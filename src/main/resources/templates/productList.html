@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>제품 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">제품 목록</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>제품 이름</th>
+            <th>설명</th>
+            <th>가격</th>
+            <th>카테고리</th>
+            <th>수정</th>
+            <th>삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td>
+                <a th:href="@{/products/{id}(id=${product.productId})}" th:text="${product.productName}" style="text-decoration: none; color: inherit;"></a>
+            </td>
+            <td th:text="${product.description}">설명</td>
+            <td th:text="${product.price}">가격</td>
+            <td th:text="${product.category}">카테고리</td>
+            <td>
+                <form th:action="@{/products/update/{id}(id=${product.productId})}" method="get" style="display:inline;">
+                    <button type="submit" class="btn btn-warning btn-sm">수정</button>
+                </form>
+            </td>
+            <td>
+                <form th:action="@{/products/delete/{id}(id=${product.productId})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                </form>
+            </td>
+
+
+        </tr>
+        <tr th:if="${#lists.isEmpty(products)}">
+            <td colspan="6" class="text-center">등록된 제품이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/products/add}" class="btn btn-primary">제품 등록</a>
+</div>
+</body>
+</html>
