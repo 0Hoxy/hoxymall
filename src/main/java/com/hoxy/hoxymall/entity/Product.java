@@ -1,13 +1,12 @@
 package com.hoxy.hoxymall.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,7 +27,8 @@ public class Product {
     //상품 sku(난수로 생성)
     private String sku;
 
-    private String category;
+    @ManyToMany
+    private List<Category> categories = new ArrayList<>();
 
     private String imgUrl;
 

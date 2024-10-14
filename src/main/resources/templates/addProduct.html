@@ -32,8 +32,13 @@
 
         <div class="form-group">
             <label for="category">카테고리:</label>
-            <input type="text" id="category" class="form-control" th:field="*{category}" required />
+            <select id="category" class="form-control" th:field="*{categoryIds}" multiple required>
+                <option th:each="category : ${categories}"
+                        th:value="${category.categoryId}"
+                        th:text="${category.categoryName}"></option>
+            </select>
         </div>
+
 
         <button type="submit" class="btn btn-primary">상품 등록</button>
     </form>

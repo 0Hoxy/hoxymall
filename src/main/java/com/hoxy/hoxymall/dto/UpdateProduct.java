@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,7 +22,8 @@ public class UpdateProduct {
 
     private int quantity;
 
-    private String category;
+    private List<String> category;
+    private List<Long> categoryIds;
 
     private String imgUrl;
 

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 등록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>카테고리 등록</h1>
+        <!-- 제품 페이지로 이동하는 버튼 -->
+        <a href="/products" class="btn btn-secondary">상품 목록</a>
+    </div>
+
+    <!-- 카테고리 리스트 표시 -->
+    <h2 class="mb-3">현재 등록된 카테고리</h2>
+    <ul class="list-group mb-4">
+        <li class="list-group-item" th:each="category : ${categories}" th:text="${category.categoryName}"></li>
+    </ul>
+
+    <form th:action="@{/categories/add}" th:object="${category}" method="post">
+        <div class="form-group">
+            <label for="name">카테고리명:</label>
+            <input type="text" id="name" class="form-control" th:field="*{categoryName}" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">카테고리 등록</button>
+    </form>
+
+    <div th:if="${message}" class="alert alert-success mt-3">
+        <p th:text="${message}"></p>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

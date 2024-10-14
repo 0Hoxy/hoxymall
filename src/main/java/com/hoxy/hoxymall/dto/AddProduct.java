@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class AddProduct {
 
     private int quantity;
 
-    private String category;
+    private List<Long> categoryIds;
 
     private String imgUrl;
 
