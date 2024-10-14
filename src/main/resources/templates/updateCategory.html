@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 수정</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">카테고리 수정</h1>
+
+    <form th:action="@{/categories/update/{id}(id=${category.categoryId})}" th:object="${category}" method="post">
+        <input type="hidden" th:field="*{categoryId}"/> <!-- 카테고리 ID 숨기기 -->
+
+        <div class="form-group">
+            <label for="name">카테고리명:</label>
+            <input type="text" id="name" class="form-control" th:field="*{categoryName}" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">수정 완료</button>
+    </form>
+
+    <div th:if="${message}" class="alert alert-success mt-3">
+        <p th:text="${message}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger mt-3">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div class="mt-4">
+        <a href="/categories/add" class="btn btn-secondary">카테고리 목록으로 돌아가기</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

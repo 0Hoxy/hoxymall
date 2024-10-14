@@ -9,15 +9,31 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>카테고리 등록</h1>
-        <!-- 제품 페이지로 이동하는 버튼 -->
         <a href="/products" class="btn btn-secondary">상품 목록</a>
     </div>
 
-    <!-- 카테고리 리스트 표시 -->
     <h2 class="mb-3">현재 등록된 카테고리</h2>
-    <ul class="list-group mb-4">
-        <li class="list-group-item" th:each="category : ${categories}" th:text="${category.categoryName}"></li>
+
+    <!-- 카테고리가 비어 있을 때 메시지 표시 -->
+    <div th:if="${#lists.isEmpty(categories)}" class="alert alert-warning">
+        등록된 카테고리가 없습니다.
+    </div>
+
+    <ul class="list-group mb-4" th:if="${!#lists.isEmpty(categories)}">
+        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="category : ${categories}">
+            <span th:text="${category.categoryName}"></span>
+            <div class="ml-auto"> <!-- 버튼을 담는 div -->
+                <a th:href="@{/categories/update/{id}(id=${category.categoryId})}" class="btn btn-warning btn-sm">수정</a>
+                <form th:action="@{/categories/delete/{id}(id=${category.categoryId})}" method="post" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                </form>
+            </div> <!-- 버튼을 담는 div -->
+        </li>
     </ul>
+
+    <div th:if="${errorMessage}" class="alert alert-danger mt-3">
+        <p th:text="${errorMessage}"></p>
+    </div>
 
     <form th:action="@{/categories/add}" th:object="${category}" method="post">
         <div class="form-group">
