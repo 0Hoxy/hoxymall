@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,7 +29,13 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public String postProduct(Model model, AddProduct addProduct) {
+    public String postProduct(Model model,
+                              @ModelAttribute AddProduct addProduct,
+                              @RequestParam("productImgFiles") List<MultipartFile> productImgFiles, // 이미지 파일
+                              @RequestParam("descriptionImgFiles") List<MultipartFile> descriptionImgFiles) { // 상세 이미지 파일
+        addProduct.setProductImgFiles(productImgFiles);
+        addProduct.setDescriptionImgFiles(descriptionImgFiles);
+
         productService.addProduct(addProduct);
         model.addAttribute("message", "상품 등록이 완료되었습니다.");
         return "redirect:/products";
@@ -51,7 +58,6 @@ public class ProductController {
     @GetMapping("/update/{id}")
     public String updateProduct(@PathVariable Long id, Model model) {
         List<Category> categories = categoryService.findAll();
-
         UpdateProduct product = productService.getUpdateProductId(id);
         model.addAttribute("product", product);
         model.addAttribute("categories", categories);
@@ -59,7 +65,13 @@ public class ProductController {
     }
 
     @PostMapping("/update/{id}")
-    public String postUpdateProduct(@PathVariable Long id, UpdateProduct updateProduct) {
+    public String postUpdateProduct(@PathVariable Long id,
+                                    @ModelAttribute UpdateProduct updateProduct,
+                                    @RequestParam("productImgFiles") List<MultipartFile> productImgFiles, // 이미지 파일
+                                    @RequestParam("descriptionImgFiles") List<MultipartFile> descriptionImgFiles) { // 상세 이미지 파일
+        updateProduct.setProductImgFiles(productImgFiles);
+        updateProduct.setDescriptionImgFiles(descriptionImgFiles);
+
         productService.updateProduct(id, updateProduct);
         return "redirect:/products";
     }

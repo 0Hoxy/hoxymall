@@ -34,7 +34,13 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories = new ArrayList<>();
 
-    private String imgUrl;
+    // 상품 이미지 연관 관계 추가
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductImage> productImages = new ArrayList<>();
+
+    // 상세 설명 이미지 연관 관계 추가
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<DescriptionImage> descriptionImages = new ArrayList<>();
 
     //현재시간 등록
     private LocalDateTime createdDate;

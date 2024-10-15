@@ -9,9 +9,10 @@
 <div class="container mt-5">
     <h1 class="mb-4">제품 목록</h1>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead>
         <tr>
+            <th>이미지</th> <!-- 이미지 열 추가 -->
             <th>제품 이름</th>
             <th>설명</th>
             <th>가격</th>
@@ -22,16 +23,23 @@
         </thead>
         <tbody>
         <tr th:if="${#lists.isEmpty(products)}">
-            <td colspan="6" class="text-center">등록된 제품이 없습니다.</td>
+            <td colspan="7" class="text-center">등록된 제품이 없습니다.</td> <!-- colspan 수정 -->
         </tr>
         <tr th:each="product : ${products}" th:if="${!#lists.isEmpty(products)}">
+            <td>
+                <div th:each="imgUrl : ${product.productImgUrl}">
+                    <img th:src="@{/images/{filename}(filename=${imgUrl})}" alt="Product Image" style="max-width: 200px;"/>
+                </div>
+            </td>
+
             <td>
                 <a th:href="@{/products/{id}(id=${product.productId})}" th:text="${product.productName}" style="text-decoration: none; color: inherit;"></a>
             </td>
             <td th:text="${product.description}">설명</td>
             <td th:text="${product.price}">가격</td>
-            <td th:text="${#lists.isEmpty(product.category) ? '' : product.category}">카테고리</td>
-
+            <td>
+                <span th:each="cat : ${product.category}" th:text="${cat}"></span>
+            </td> <!-- 카테고리 수정 -->
 
             <td>
                 <form th:action="@{/products/update/{id}(id=${product.productId})}" method="get" style="display:inline;">

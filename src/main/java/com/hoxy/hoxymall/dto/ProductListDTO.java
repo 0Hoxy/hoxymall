@@ -3,6 +3,7 @@ package com.hoxy.hoxymall.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public class ProductListDTO {
     private int price;
 
     private List<String> category;
+
+    private List<String> productImgUrl;
 }

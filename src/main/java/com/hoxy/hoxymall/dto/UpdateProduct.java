@@ -3,6 +3,7 @@ package com.hoxy.hoxymall.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +26,8 @@ public class UpdateProduct {
     private List<String> category;
     private List<Long> categoryIds;
 
-    private String imgUrl;
+    private List<MultipartFile> productImgFiles;
+    private List<MultipartFile> descriptionImgFiles;
+
 
 }

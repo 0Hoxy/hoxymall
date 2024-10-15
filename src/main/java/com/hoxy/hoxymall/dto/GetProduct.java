@@ -20,5 +20,8 @@ public class GetProduct {
 
     private List<String> categoryName;
 
-    private String imgUrl;
+    private List<Long> productImgIds;
+
+    private List<Long> descriptionImgIds;
+
 }

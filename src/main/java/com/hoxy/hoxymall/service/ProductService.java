@@ -1,11 +1,10 @@
 package com.hoxy.hoxymall.service;
 
-import com.hoxy.hoxymall.dto.AddProduct;
-import com.hoxy.hoxymall.dto.GetProduct;
-import com.hoxy.hoxymall.dto.ProductListDTO;
-import com.hoxy.hoxymall.dto.UpdateProduct;
+import com.hoxy.hoxymall.dto.*;
 import com.hoxy.hoxymall.entity.Category;
+import com.hoxy.hoxymall.entity.DescriptionImage;
 import com.hoxy.hoxymall.entity.Product;
+import com.hoxy.hoxymall.entity.ProductImage;
 import com.hoxy.hoxymall.repository.CategoryRepository;
 import com.hoxy.hoxymall.repository.ProductRepository;
 import com.hoxy.hoxymall.util.SkuGenerator;
@@ -13,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,22 +24,53 @@ public class ProductService {
 
     private final ProductRepository productRepo;
     private final CategoryRepository categoryRepo;
-
     private final ModelMapper modelMapper;
+    private final ImageService imageService; // ImageService 주입
+
     public void addProduct(AddProduct addProduct) {
         Product product = modelMapper.map(addProduct, Product.class);
-        //SKU 생성
-        String sku = SkuGenerator.generateSku(8);
-        product.setSku(sku);
-
+        product.setSku(SkuGenerator.generateSku(8));
         product.setCreatedDate(LocalDateTime.now());
 
-        //카테고리 설정
-        List<Category> categories = categoryRepo.findAllByCategoryIdIn(addProduct.getCategoryIds());
-        product.setCategories(categories);
-        System.out.println(categories);
+        // 카테고리 설정
+        product.setCategories(findCategoriesByIds(addProduct.getCategoryIds()));
+
+        // 이미지 업로드 및 설정
+        List<ProductImageDTO> productImageDTOs = uploadImages(addProduct.getProductImgFiles());
+        List<ProductImage> productImages = productImageDTOs.stream()
+                .map(dto -> new ProductImage(dto.getProductImgUrl(), product)) // ProductImage 생성 시 product 필드 설정
+                .collect(Collectors.toList());
+        product.setProductImages(productImages);
+
+        List<DescriptionImageDTO> descriptionImageDTOs = uploadDescriptionImages(addProduct.getDescriptionImgFiles());
+        List<DescriptionImage> descriptionImages = descriptionImageDTOs.stream()
+                .map(dto -> new DescriptionImage(dto.getDescriptionImgUrl(), product)) // DescriptionImage 생성 시 product 필드 설정
+                .collect(Collectors.toList());
+        product.setDescriptionImages(descriptionImages);
+
 
         productRepo.save(product);
+    }
+
+
+    // 이미지 업로드 및 ProductImage 생성
+    private List<ProductImageDTO> uploadImages(List<MultipartFile> productImgFiles) {
+        return productImgFiles.stream()
+                .map(file -> {
+                    String imgUrl = imageService.uploadImg(file);
+                    return new ProductImageDTO(imgUrl); // ProductImageDTO 생성
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 상세 이미지 업로드 및 DescriptionImage 생성
+    private List<DescriptionImageDTO> uploadDescriptionImages(List<MultipartFile> descriptionImgFiles) {
+        return descriptionImgFiles.stream()
+                .map(file -> {
+                    String imgUrl = imageService.uploadImg(file);
+                    return new DescriptionImageDTO(imgUrl); // DescriptionImageDTO 생성
+                })
+                .collect(Collectors.toList());
     }
 
     public List<ProductListDTO> showProduct() {
@@ -52,36 +83,105 @@ public class ProductService {
                         product.getPrice(),
                         product.getCategories().stream()
                                 .map(Category::getCategoryName)
-                                .collect(Collectors.toList()) // 카테고리 이름 리스트로 변환
+                                .collect(Collectors.toList()),
+                        product.getProductImages().stream()
+                                .map(ProductImage::getProductImgUrl)
+                                .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
     }
 
     public GetProduct getProductById(Long id) {
-        // 상품을 조회하여 Optional<Product>을 받습니다.
         Product product = productRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 상품이 존재하지 않습니다."));
 
+        return mapProductToGetProduct(product);
+    }
+
+    public UpdateProduct getUpdateProductId(Long id) {
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 상품이 존재하지 않습니다."));
+
+        return mapProductToUpdateProduct(product);
+    }
+
+    public void updateProduct(Long id, UpdateProduct updateProduct) {
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 상품이 존재하지 않습니다."));
+
+        product.setProductName(updateProduct.getProductName());
+        product.setDescription(updateProduct.getDescription());
+        product.setPrice(updateProduct.getPrice());
+        product.setQuantity(updateProduct.getQuantity());
+
+        product.setCategories(findCategoriesByIds(updateProduct.getCategoryIds()));
+
+        // 이미지 파일이 제공된 경우에만 업로드 및 업데이트
+        if (updateProduct.getProductImgFiles() != null && !updateProduct.getProductImgFiles().isEmpty()) {
+            List<ProductImage> productImages = uploadImages(updateProduct.getProductImgFiles()).stream()
+                    .map(dto -> new ProductImage(dto.getProductImgUrl(), product)) // 엔티티 생성
+                    .collect(Collectors.toList());
+            product.setProductImages(productImages);
+        }
+
+        if (updateProduct.getDescriptionImgFiles() != null && !updateProduct.getDescriptionImgFiles().isEmpty()) {
+            List<DescriptionImage> descriptionImages = uploadDescriptionImages(updateProduct.getDescriptionImgFiles()).stream()
+                    .map(dto -> new DescriptionImage(dto.getDescriptionImgUrl(), product)) // 엔티티 생성
+                    .collect(Collectors.toList());
+            product.setDescriptionImages(descriptionImages);
+        }
+
+        product.setUpdatedDate(LocalDateTime.now());
+
+        productRepo.save(product);
+    }
+
+    public void deleteProduct(Long id) {
+        Product product = productRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 상품이 존재하지 않습니다."));
+        productRepo.delete(product);
+    }
+
+    // 카테고리 찾기
+    private List<Category> findCategoriesByIds(List<Long> categoryIds) {
+        return categoryRepo.findAllByCategoryIdIn(categoryIds);
+    }
+
+    // Product -> GetProduct DTO 변환
+    private GetProduct mapProductToGetProduct(Product product) {
         List<String> categoryNames = product.getCategories().stream()
                 .map(Category::getCategoryName)
                 .collect(Collectors.toList());
-        // Product 객체를 GetProduct DTO로 변환하여 반환합니다.
+
+        List<Long> productImgIds = product.getProductImages().stream()
+                .map(ProductImage::getProductImgId)
+                .collect(Collectors.toList());
+
+        List<Long> descriptionImgIds = product.getDescriptionImages().stream()
+                .map(DescriptionImage::getDescriptionImgId)
+                .collect(Collectors.toList());
+
         return new GetProduct(
                 product.getProductId(),
                 product.getProductName(),
                 product.getDescription(),
                 product.getPrice(),
                 categoryNames,
-                product.getImgUrl()
+                productImgIds,
+                descriptionImgIds
         );
     }
 
-    public UpdateProduct getUpdateProductId(Long id) {
-        Product product = productRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다."));
+    // Product -> UpdateProduct DTO 변환
+    private UpdateProduct mapProductToUpdateProduct(Product product) {
+        List<String> categoryNames = product.getCategories().stream()
+                .map(Category::getCategoryName)
+                .toList(); // collect(Collectors.toList()) 대신 toList() 사용
 
-        List<String> categoryNames = product.getCategories().stream().map(Category::getCategoryName).collect(Collectors.toList());
-        List<Long> categoryIds = product.getCategories().stream().map(Category::getCategoryId).collect(Collectors.toList());
+        List<Long> categoryIds = product.getCategories().stream()
+                .map(Category::getCategoryId)
+                .toList(); // collect(Collectors.toList()) 대신 toList() 사용
+
         return new UpdateProduct(
                 product.getProductId(),
                 product.getProductName(),
@@ -90,32 +190,9 @@ public class ProductService {
                 product.getQuantity(),
                 categoryNames,
                 categoryIds,
-                product.getImgUrl()
+                null,
+                null // image files는 업데이트 DTO에 없음
         );
     }
 
-    public void updateProduct(Long id, UpdateProduct updateProduct) {
-        Product product = productRepo.findByProductId(id);
-        if (product == null) {
-            throw new EntityNotFoundException("해당 상품이 존재하지 않습니다.");
-        }
-
-        product.setProductName(updateProduct.getProductName());
-        product.setDescription(updateProduct.getDescription());
-        product.setPrice(updateProduct.getPrice());
-        product.setQuantity(updateProduct.getQuantity());
-        //카테고리 업데이트
-        List<Category> categories = categoryRepo.findAllByCategoryIdIn(updateProduct.getCategoryIds()); // 주어진 카테고리 ID 목록에 해당하는 모든 엔티티를 찾는 메서드
-        product.setCategories(categories);
-
-        product.setImgUrl(updateProduct.getImgUrl());
-        product.setUpdatedDate(LocalDateTime.now());
-
-        productRepo.save(product);
-    }
-
-    public void deleteProduct(Long id) {
-        Product product = productRepo.findById(id).orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다"));
-        productRepo.delete(product);
-    }
 }
