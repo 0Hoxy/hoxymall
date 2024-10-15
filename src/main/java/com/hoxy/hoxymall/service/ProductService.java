@@ -6,14 +6,18 @@ import com.hoxy.hoxymall.entity.DescriptionImage;
 import com.hoxy.hoxymall.entity.Product;
 import com.hoxy.hoxymall.entity.ProductImage;
 import com.hoxy.hoxymall.repository.CategoryRepository;
+import com.hoxy.hoxymall.repository.DescriptionImgRepository;
+import com.hoxy.hoxymall.repository.ProductImgRepository;
 import com.hoxy.hoxymall.repository.ProductRepository;
 import com.hoxy.hoxymall.util.SkuGenerator;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +29,8 @@ public class ProductService {
     private final ProductRepository productRepo;
     private final CategoryRepository categoryRepo;
     private final ModelMapper modelMapper;
+    private final ProductImgRepository productImgRepository;
+    private final DescriptionImgRepository descriptionImgRepository;
     private final ImageService imageService; // ImageService 주입
 
     public void addProduct(AddProduct addProduct) {
@@ -105,36 +111,58 @@ public class ProductService {
         return mapProductToUpdateProduct(product);
     }
 
+    @Transactional
     public void updateProduct(Long id, UpdateProduct updateProduct) {
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 상품이 존재하지 않습니다."));
 
+        // 기존 이미지 삭제 및 파일 시스템에서 삭제
+        imageService.deleteImagesFromFileSystem(product.getProductImages());
+
+        // 기존 이미지를 명시적으로 삭제
+        product.getProductImages().forEach(image -> {
+            image.setProduct(null);  // 연관관계 제거
+            productImgRepository.delete(image);  // 이미지 삭제
+        });
+        product.getProductImages().clear();  // 컬렉션 비우기
+
+        // 제품 정보 업데이트
         product.setProductName(updateProduct.getProductName());
         product.setDescription(updateProduct.getDescription());
         product.setPrice(updateProduct.getPrice());
         product.setQuantity(updateProduct.getQuantity());
-
         product.setCategories(findCategoriesByIds(updateProduct.getCategoryIds()));
 
         // 이미지 파일이 제공된 경우에만 업로드 및 업데이트
         if (updateProduct.getProductImgFiles() != null && !updateProduct.getProductImgFiles().isEmpty()) {
-            List<ProductImage> productImages = uploadImages(updateProduct.getProductImgFiles()).stream()
+            List<ProductImage> newProductImages = uploadImages(updateProduct.getProductImgFiles()).stream()
                     .map(dto -> new ProductImage(dto.getProductImgUrl(), product)) // 엔티티 생성
                     .collect(Collectors.toList());
-            product.setProductImages(productImages);
+            product.setProductImages(newProductImages);
         }
 
+        // 설명 이미지 처리
+        imageService.deleteDescriptionImagesFromFileSystem(product.getDescriptionImages());
+        product.getDescriptionImages().forEach(image -> {
+            image.setProduct(null);  // 연관관계 제거
+            descriptionImgRepository.delete(image);  // 이미지 삭제
+        });
+        product.getDescriptionImages().clear();  // 컬렉션 비우기
+
         if (updateProduct.getDescriptionImgFiles() != null && !updateProduct.getDescriptionImgFiles().isEmpty()) {
-            List<DescriptionImage> descriptionImages = uploadDescriptionImages(updateProduct.getDescriptionImgFiles()).stream()
+            List<DescriptionImage> newDescriptionImages = uploadDescriptionImages(updateProduct.getDescriptionImgFiles()).stream()
                     .map(dto -> new DescriptionImage(dto.getDescriptionImgUrl(), product)) // 엔티티 생성
                     .collect(Collectors.toList());
-            product.setDescriptionImages(descriptionImages);
+            product.setDescriptionImages(newDescriptionImages);
         }
 
         product.setUpdatedDate(LocalDateTime.now());
-
         productRepo.save(product);
     }
+
+
+
+
 
     public void deleteProduct(Long id) {
         Product product = productRepo.findById(id)

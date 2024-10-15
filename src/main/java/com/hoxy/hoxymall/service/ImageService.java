@@ -1,5 +1,7 @@
 package com.hoxy.hoxymall.service;
 
+import com.hoxy.hoxymall.entity.DescriptionImage;
+import com.hoxy.hoxymall.entity.ProductImage;
 import com.hoxy.hoxymall.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,4 +40,23 @@ public class ImageService {
             throw new RuntimeException("파일 저장에 실패하였습니다.", e);
         }
     }
+
+    public void deleteImagesFromFileSystem(List<ProductImage> productImages) {
+        for (ProductImage image : productImages) {
+            File file = new File(uploadDir + image.getProductImgUrl()); // 이미지 저장 경로
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+    }
+
+    public void deleteDescriptionImagesFromFileSystem(List<DescriptionImage> descriptionImages) {
+        for (DescriptionImage image : descriptionImages) {
+            File file = new File(uploadDir + image.getDescriptionImgUrl()); // 이미지 저장 경로
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+    }
+
 }

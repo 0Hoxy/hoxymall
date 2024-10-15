@@ -35,7 +35,7 @@ public class Product {
     private List<Category> categories = new ArrayList<>();
 
     // 상품 이미지 연관 관계 추가
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductImage> productImages = new ArrayList<>();
 
     // 상세 설명 이미지 연관 관계 추가
