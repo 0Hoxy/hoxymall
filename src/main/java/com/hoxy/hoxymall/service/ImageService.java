@@ -43,20 +43,45 @@ public class ImageService {
 
     public void deleteImagesFromFileSystem(List<ProductImage> productImages) {
         for (ProductImage image : productImages) {
-            File file = new File(uploadDir + image.getProductImgUrl()); // 이미지 저장 경로
+            File file = new File(uploadDir + File.separator + image.getProductImgUrl()); // 이미지 저장 경로
+            System.out.println("삭제 시도: " + file.getAbsolutePath()); // 삭제하려는 파일 경로 출력
             if (file.exists()) {
-                file.delete();
+                try {
+                    boolean deleted = file.delete(); // 파일 삭제 시 성공 여부를 반환
+                    if (deleted) {
+                        System.out.println("파일 삭제 성공: " + file.getAbsolutePath());
+                    } else {
+                        System.err.println("파일 삭제 실패: " + file.getAbsolutePath());
+                    }
+                } catch (Exception e) {
+                    System.err.println("파일 삭제 중 오류 발생: " + e.getMessage());
+                }
+            } else {
+                System.out.println("파일이 존재하지 않음: " + file.getAbsolutePath());
             }
         }
     }
 
     public void deleteDescriptionImagesFromFileSystem(List<DescriptionImage> descriptionImages) {
         for (DescriptionImage image : descriptionImages) {
-            File file = new File(uploadDir + image.getDescriptionImgUrl()); // 이미지 저장 경로
+            File file = new File(uploadDir + File.separator + image.getDescriptionImgUrl()); // 이미지 저장 경로
+            System.out.println("삭제 시도: " + file.getAbsolutePath()); // 삭제하려는 파일 경로 출력
             if (file.exists()) {
-                file.delete();
+                try {
+                    boolean deleted = file.delete(); // 파일 삭제 시 성공 여부를 반환
+                    if (deleted) {
+                        System.out.println("파일 삭제 성공: " + file.getAbsolutePath());
+                    } else {
+                        System.err.println("파일 삭제 실패: " + file.getAbsolutePath());
+                    }
+                } catch (Exception e) {
+                    System.err.println("파일 삭제 중 오류 발생: " + e.getMessage());
+                }
+            } else {
+                System.out.println("파일이 존재하지 않음: " + file.getAbsolutePath());
             }
         }
     }
+
 
 }

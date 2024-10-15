@@ -168,6 +168,10 @@ public class ProductService {
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 상품이 존재하지 않습니다."));
         productRepo.delete(product);
+        // 기존 이미지 삭제 및 파일 시스템에서 삭제
+        imageService.deleteImagesFromFileSystem(product.getProductImages());
+        // 설명 이미지 처리
+        imageService.deleteDescriptionImagesFromFileSystem(product.getDescriptionImages());
     }
 
     // 카테고리 찾기
