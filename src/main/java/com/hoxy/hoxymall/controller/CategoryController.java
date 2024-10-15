@@ -1,7 +1,6 @@
 package com.hoxy.hoxymall.controller;
 
 import com.hoxy.hoxymall.dto.CategoryDTO;
-import com.hoxy.hoxymall.dto.UpdateProduct;
 import com.hoxy.hoxymall.entity.Category;
 import com.hoxy.hoxymall.exception.CategoryAlreadyExistsException;
 import com.hoxy.hoxymall.service.CategoryService;

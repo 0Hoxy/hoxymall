@@ -2,7 +2,6 @@ package com.hoxy.hoxymall.service;
 
 import com.hoxy.hoxymall.entity.DescriptionImage;
 import com.hoxy.hoxymall.entity.ProductImage;
-import com.hoxy.hoxymall.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,8 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final ProductRepository productRepository;
-    private final String uploadDir = "C:\\Users\\Seo Young Ho\\Desktop\\hoxymall\\src\\main\\resources\\static\\images";
+    private final String uploadDir = "C:/Users/Seo Young Ho/Desktop/hoxymall/src/main/resources/static/images";
 
 
     public String uploadImg(MultipartFile file) {

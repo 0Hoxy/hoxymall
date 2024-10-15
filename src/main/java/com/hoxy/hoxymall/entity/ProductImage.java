@@ -21,10 +21,6 @@ public class ProductImage {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    // URL만 받는 생성자 추가
-    public ProductImage(String productImgUrl) {
-        this.productImgUrl = productImgUrl;
-    }
 
     // Product와 URL을 받아 초기화하는 생성자
     public ProductImage(String productImgUrl, Product product) {
