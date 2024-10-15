@@ -9,21 +9,37 @@
 <body>
 <div class="container mt-5">
     <h1 th:text="${product.productName}">제품 이름</h1>
+
     <div class="card mb-3">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <img th:src="${product.imgUrl}" class="card-img" alt="제품 이미지" style="width: 100%; height: auto;">
+                <img th:src="@{/images/{filename}(filename=${product.productImgUrl})}" class="card-img" alt="제품 이미지" style="width: 100%; height: auto;">
             </div>
             <div class="col-md-8">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${product.productName}">제품 이름</h5>
                     <p class="card-text" th:text="${product.description}">제품 설명</p>
                     <p class="card-text"><strong>가격:</strong> <span th:text="${product.price}">가격</span> 원</p>
-                    <p class="card-text"><strong>카테고리:</strong> <span th:text="${product.category}">카테고리</span></p>
+                    <p class="card-text"><strong>카테고리:</strong> <span th:text="${product.categoryName}">카테고리</span></p>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 제품 설명 이미지 표시 -->
+    <h5>상세 이미지</h5>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <th:block th:each="imgUrl : ${product.descriptionImgUrl}">
+                    <div class="col-md-3 mb-3">
+                        <img th:src="@{/images/{filename}(filename=${imgUrl})}" alt="상세 이미지" style="max-width: 200px;"/>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
     <a href="/products" class="btn btn-primary">목록으로 돌아가기</a>
 </div>
 

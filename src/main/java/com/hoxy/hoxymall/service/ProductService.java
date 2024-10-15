@@ -177,16 +177,19 @@ public class ProductService {
 
     // Product -> GetProduct DTO 변환
     private GetProduct mapProductToGetProduct(Product product) {
+        // 카테고리 이름 리스트
         List<String> categoryNames = product.getCategories().stream()
                 .map(Category::getCategoryName)
                 .collect(Collectors.toList());
 
-        List<Long> productImgIds = product.getProductImages().stream()
-                .map(ProductImage::getProductImgId)
+        // 제품 이미지 URL 리스트
+        List<String> productImgUrls = product.getProductImages().stream()
+                .map(ProductImage::getProductImgUrl) // imgUrl을 가져옵니다
                 .collect(Collectors.toList());
 
-        List<Long> descriptionImgIds = product.getDescriptionImages().stream()
-                .map(DescriptionImage::getDescriptionImgId)
+        // 설명 이미지 URL 리스트
+        List<String> descriptionImgUrls = product.getDescriptionImages().stream()
+                .map(DescriptionImage::getDescriptionImgUrl) // imgUrl을 가져옵니다
                 .collect(Collectors.toList());
 
         return new GetProduct(
@@ -195,10 +198,11 @@ public class ProductService {
                 product.getDescription(),
                 product.getPrice(),
                 categoryNames,
-                productImgIds,
-                descriptionImgIds
+                productImgUrls, // 제품 이미지 URL 리스트 추가
+                descriptionImgUrls // 설명 이미지 URL 리스트 추가
         );
     }
+
 
     // Product -> UpdateProduct DTO 변환
     private UpdateProduct mapProductToUpdateProduct(Product product) {
