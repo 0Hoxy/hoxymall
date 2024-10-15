@@ -1,43 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>제품 목록</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .loader {
-            border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid #3498db; /* Blue */
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none; /* 기본적으로 숨김 */
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .image-container {
-            position: relative;
-            width: 200px; /* 이미지 너비 */
-            height: 150px; /* 이미지 높이 */
-            margin-bottom: 10px; /* 이미지 간격 조정 */
-        }
-
-        .image-container img {
-            width: 100%;
-            height: 100%;
-            display: none; /* 로딩 중에는 숨김 */
-            border-radius: 5px; /* 이미지 모서리 둥글게 */
-        }
-    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -46,7 +12,7 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>이미지</th>
+            <th>이미지</th> <!-- 이미지 열 추가 -->
             <th>제품 이름</th>
             <th>설명</th>
             <th>가격</th>
@@ -57,15 +23,12 @@
         </thead>
         <tbody>
         <tr th:if="${#lists.isEmpty(products)}">
-            <td colspan="7" class="text-center">등록된 제품이 없습니다.</td>
+            <td colspan="7" class="text-center">등록된 제품이 없습니다.</td> <!-- colspan 수정 -->
         </tr>
         <tr th:each="product : ${products}" th:if="${!#lists.isEmpty(products)}">
             <td>
-                <div class="image-container">
-                    <div class="loader" id="loader-[[${product.productId}]]"></div> <!-- 로더 추가 -->
-                    <img th:src="@{/images/{filename}(filename=${product.productImgUrl})}" alt="Product Image"
-                         style="display:none;"
-                         id="image-[[${product.productId}]]" /> <!-- ID 추가 -->
+                <div th:each="imgUrl : ${product.productImgUrl}">
+                    <img th:src="@{/images/{filename}(filename=${imgUrl})}" alt="Product Image" style="max-width: 200px;"/>
                 </div>
             </td>
 
@@ -76,7 +39,7 @@
             <td th:text="${product.price}">가격</td>
             <td>
                 <span th:each="cat : ${product.category}" th:text="${cat}"></span>
-            </td>
+            </td> <!-- 카테고리 수정 -->
 
             <td>
                 <form th:action="@{/products/update/{id}(id=${product.productId})}" method="get" style="display:inline;">
@@ -98,18 +61,4 @@
     </div>
 </div>
 </body>
-<script>
-    // 이미지 로드가 완료된 경우
-    document.getElementById('image-[[${product.productId}]]').addEventListener('load', function() {
-        this.style.display = 'block'; // 이미지 표시
-        document.getElementById('loader-[[${product.productId}]]').style.display = 'none'; // 로더 숨김
-    });
-
-    // 이미지 로드 오류가 발생한 경우
-    document.getElementById('image-[[${product.productId}]]').addEventListener('error', function() {
-        document.getElementById('loader-[[${product.productId}]]').style.display = 'none'; // 로더 숨김
-        // 여기서 기본 이미지로 변경할 수 있습니다.
-        // this.src = 'default-image.jpg';
-    });
-</script>
 </html>
