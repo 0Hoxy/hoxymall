@@ -20,6 +20,7 @@
 - SpringSecurity 의존성 주입
 - 회원 CRUD기능 구현
 - SecurityConfig 및 loadUser를 위한 CustomUserDetailsService 구현
+- 해당 기능은 REST API로 만들었음
 
 
 ## 개선해야 할 사항
