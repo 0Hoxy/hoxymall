@@ -22,10 +22,14 @@
 - SecurityConfig 및 loadUser를 위한 CustomUserDetailsService 구현
 - 해당 기능은 ResponseBody를 이용하여 REST API로 만들었음
 
-
+**2024-10-21**
+- OAuth2를 이용한 Google, Naver, Kakao 로그인
+- DB로 데이터 전달 완료
+- 
 ## 개선해야 할 사항
 - 이미지 업로드 개선(업로드 진행 표시기 등)
-- 회원가입 페이지, 유저 정보수정 및 전체 유저 조회(관리자) 페이지, 회원탈퇴 버튼or회원탈퇴 페이지
+- <span color=red>회원가입 페이지, 유저 정보수정 및 전체 유저 조회(관리자) 페이지, 회원탈퇴 버튼or회원탈퇴 페이지</span>
 - 고객 페이지와 관리자 페이지 분리시켜 제작
-- 소셜 로그인
+- 소셜 로그인(권한 검증 및 코드 개선)*
 - 장바구니 및 결제 시스템
+- 상품 CRUD도 추후 REST API로 변경
