@@ -10,4 +10,9 @@ public class SkuGenerator {
         }
         return RandomStringUtils.random(length, true, true);
     }
+
+    public static String generateInitialPassword(int length) {
+        return RandomStringUtils.randomAlphanumeric(length);
+    }
 }
+
