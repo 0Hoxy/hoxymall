@@ -1,0 +1,108 @@
+/* 전체 페이지 스타일 */
+body {
+    font-family: Arial, sans-serif; /* 기본 폰트 */
+    background-color: #f4f4f4; /* 배경 색 */
+    color: #333; /* 텍스트 색 */
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center; /* 중앙 정렬 */
+    height: 100vh; /* 화면 전체 높이 */
+    margin: 0; /* 기본 마진 제거 */
+}
+
+/* 로그인 컨테이너 스타일 */
+.login-container {
+    background: white; /* 배경 색 */
+    padding: 20px; /* 내부 여백 */
+    border-radius: 8px; /* 모서리 둥글게 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    width: 300px; /* 너비 */
+}
+
+/* 헤더 스타일 */
+h2 {
+    text-align: center; /* 중앙 정렬 */
+    margin-bottom: 20px; /* 아래 여백 */
+}
+
+/* 폼 스타일 */
+form {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+}
+
+/* 입력 필드 스타일 */
+input[type="text"],
+input[type="password"] {
+    padding: 10px; /* 패딩 */
+    margin-bottom: 15px; /* 아래 여백 */
+    border: 1px solid #ddd; /* 테두리 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    font-size: 14px; /* 폰트 크기 */
+}
+
+/* 로그인 버튼 스타일 */
+button {
+    padding: 10px; /* 패딩 */
+    background-color: #28a745; /* 버튼 배경 색 */
+    color: white; /* 버튼 텍스트 색 */
+    border: none; /* 테두리 없음 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    cursor: pointer; /* 마우스 커서 */
+    font-size: 16px; /* 폰트 크기 */
+}
+
+/* 버튼 호버 효과 */
+button:hover {
+    background-color: #218838; /* 호버 시 배경 색 */
+}
+
+/* 소셜 로그인 영역 스타일 */
+.social-login {
+    margin-top: 20px; /* 위 여백 */
+}
+
+/* 소셜 로그인 버튼 스타일 */
+.social-login a {
+    display: block; /* 블록 요소로 표시 */
+    padding: 10px; /* 패딩 */
+    margin-bottom: 10px; /* 아래 여백 */
+    text-align: center; /* 중앙 정렬 */
+    color: white; /* 텍스트 색 */
+    text-decoration: none; /* 밑줄 없음 */
+    border-radius: 4px; /* 모서리 둥글게 */
+}
+
+/* 각 소셜 로그인 버튼 색상 */
+.google-btn {
+    background-color: #db4437; /* Google 색상 */
+}
+
+.naver-btn {
+    background-color: #1ec800; /* Naver 색상 */
+}
+
+.kakao-btn {
+    background-color: #FEE500; /* Kakao 색상 */
+    color: #3C1F00; /* Kakao 텍스트 색 */
+}
+
+/* 소셜 로그인 버튼 호버 효과 */
+.social-login a:hover {
+    opacity: 0.8; /* 호버 시 투명도 */
+}
+
+/* 회원가입 링크 스타일 */
+.register-link {
+    text-align: center; /* 중앙 정렬 */
+}
+
+.register-link a {
+    display: block; /* 블록 요소로 표시 */
+    margin-top: 10px; /* 위 여백 */
+    color: #007bff; /* 링크 색 */
+}
+
+.register-link a:hover {
+    text-decoration: underline; /* 호버 시 밑줄 */
+}
