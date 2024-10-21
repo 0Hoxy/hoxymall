@@ -18,6 +18,12 @@ public class UserController {
 
     private final UserService userService;
 
+
+    @GetMapping("/users/login")
+    public String login() {
+        return "login";
+    }
+
     @PostMapping("/users/new")
     @ResponseBody
     public ResponseEntity<NewUserDTO> newUser(@RequestBody NewUserDTO newUserDTO) {
