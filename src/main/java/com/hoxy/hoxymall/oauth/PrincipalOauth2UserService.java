@@ -7,6 +7,7 @@ import com.hoxy.hoxymall.oauth.info.KakaoUserInfo;
 import com.hoxy.hoxymall.oauth.info.NaverUserInfo;
 import com.hoxy.hoxymall.oauth.info.OAuth2UserInfo;
 import com.hoxy.hoxymall.repository.UserRepository;
+import com.hoxy.hoxymall.util.SkuGenerator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(PrincipalOauth2UserService.class);
-    private static final String DEFAULT_PASSWORD = "1234"; // 상수로 비밀번호 선언
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -50,14 +50,15 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                 throw new OAuth2AuthenticationException("OAuth2UserInfo를 생성하는 데 실패했습니다.");
             }
 
+            String rawPassword = SkuGenerator.generateInitialPassword(12);
+
             String provider = oAuth2UserInfo.getProvider();
             String providerId = oAuth2UserInfo.getProviderId();
             String email = oAuth2UserInfo.getProviderEmail();
             String username = provider + "_" + providerId;
             String name = oAuth2UserInfo.getProviderName();
-            String password = passwordEncoder.encode(DEFAULT_PASSWORD);
+            String password = passwordEncoder.encode(rawPassword);
             Role role = Role.ROLE_USER;
-
             User user = userRepository.findByUsername(username);
             if (user == null) {
                 user = new User(username, password, email, name, role, provider, providerId);
@@ -73,4 +74,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException("사용자 정보를 로드하는 중 오류 발생");
         }
     }
+
+
 }
