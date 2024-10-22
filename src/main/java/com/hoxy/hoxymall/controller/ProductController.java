@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("admin/products")
 @RequiredArgsConstructor
 public class ProductController {
 

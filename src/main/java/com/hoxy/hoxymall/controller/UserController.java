@@ -14,17 +14,18 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
 
 
-    @GetMapping("/users/login")
+    @GetMapping("/login")
     public String login() {
         return "login";
     }
 
-    @PostMapping("/users/new")
+    @PostMapping("/new")
     @ResponseBody
     public ResponseEntity<NewUserDTO> newUser(@RequestBody NewUserDTO newUserDTO) {
         NewUserDTO createdUser = userService.newUser(newUserDTO);
@@ -32,28 +33,28 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     @ResponseBody
     public ResponseEntity<NewUserDTO> updateUser(@RequestBody NewUserDTO newUserDTO, @PathVariable Long id) {
         NewUserDTO updatedUser = userService.updateUser(newUserDTO, id);
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     @ResponseBody
     public ResponseEntity<NewUserDTO> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/users/all")
+    @GetMapping("/all")
     @ResponseBody
     public ResponseEntity<List<AllUserDTO>> getUser() {
         List<AllUserDTO> allUsers = userService.getAllUsers();
         return ResponseEntity.ok(allUsers);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     @ResponseBody
     public ResponseEntity<GetUserDTO> getUser(@PathVariable Long id) {
         GetUserDTO getUser = userService.getUser(id);
