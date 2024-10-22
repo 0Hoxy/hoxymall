@@ -38,7 +38,7 @@ public class ProductController {
 
         productService.addProduct(addProduct);
         model.addAttribute("message", "상품 등록이 완료되었습니다.");
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping
@@ -73,12 +73,12 @@ public class ProductController {
         updateProduct.setDescriptionImgFiles(descriptionImgFiles);
 
         productService.updateProduct(id, updateProduct);
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 }

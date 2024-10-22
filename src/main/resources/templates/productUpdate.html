@@ -9,7 +9,7 @@
 <div class="container mt-5">
     <h1 class="mb-4">제품 수정</h1>
 
-    <form th:action="@{/products/update/{id}(id=${product.productId})}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/admin/products/update/{id}(id=${product.productId})}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="productName">제품 이름</label>
             <input type="text" id="productName" class="form-control" th:value="${product.productName}" name="productName" required>

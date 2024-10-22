@@ -36,7 +36,7 @@ public class CategoryController {
         } catch (CategoryAlreadyExistsException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage()); // 에러 메시지 설정
         }
-        return "redirect:/categories/add"; // 카테고리 등록 페이지로 리다이렉트
+        return "redirect:/admin/categories/add"; // 카테고리 등록 페이지로 리다이렉트
     }
 
     @GetMapping("/update/{id}")
@@ -53,7 +53,7 @@ public class CategoryController {
         try {
             categoryService.updateCategory(id, categoryDTO);
             model.addAttribute("message", "카테고리 수정이 완료되었습니다.");
-            return "redirect:/categories/add"; // 카테고리 목록 페이지로 리다이렉트
+            return "redirect:/admin/categories/add"; // 카테고리 목록 페이지로 리다이렉트
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("category", categoryDTO); // 수정 페이지로 현재 DTO 정보를 재전달
@@ -64,7 +64,7 @@ public class CategoryController {
     @PostMapping("/delete/{id}")
     public String deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        return "redirect:/categories/add";
+        return "redirect:/admin/categories/add";
     }
 
 }

@@ -9,7 +9,7 @@
 <div class="container mt-5">
     <h1 class="mb-4">카테고리 수정</h1>
 
-    <form th:action="@{/categories/update/{id}(id=${category.categoryId})}" th:object="${category}" method="post">
+    <form th:action="@{/admin/categories/update/{id}(id=${category.categoryId})}" th:object="${category}" method="post">
         <input type="hidden" th:field="*{categoryId}"/> <!-- 카테고리 ID 숨기기 -->
 
         <div class="form-group">
@@ -28,7 +28,7 @@
     </div>
 
     <div class="mt-4">
-        <a href="/categories/add" class="btn btn-secondary">카테고리 목록으로 돌아가기</a>
+        <a href="/admin/categories/add" class="btn btn-secondary">카테고리 목록으로 돌아가기</a>
     </div>
 </div>
 

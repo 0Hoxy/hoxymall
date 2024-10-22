@@ -9,7 +9,7 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>카테고리 등록</h1>
-        <a href="/products" class="btn btn-secondary">상품 목록</a>
+        <a href="/admin/products" class="btn btn-secondary">상품 목록</a>
     </div>
 
     <h2 class="mb-3">현재 등록된 카테고리</h2>
@@ -23,8 +23,8 @@
         <li class="list-group-item d-flex justify-content-between align-items-center" th:each="category : ${categories}">
             <span th:text="${category.categoryName}"></span>
             <div class="ml-auto"> <!-- 버튼을 담는 div -->
-                <a th:href="@{/categories/update/{id}(id=${category.categoryId})}" class="btn btn-warning btn-sm">수정</a>
-                <form th:action="@{/categories/delete/{id}(id=${category.categoryId})}" method="post" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <a th:href="@{/admin/categories/update/{id}(id=${category.categoryId})}" class="btn btn-warning btn-sm">수정</a>
+                <form th:action="@{/admin/categories/delete/{id}(id=${category.categoryId})}" method="post" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                     <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                 </form>
             </div> <!-- 버튼을 담는 div -->
@@ -35,7 +35,7 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/categories/add}" th:object="${category}" method="post">
+    <form th:action="@{/admin/categories/add}" th:object="${category}" method="post">
         <div class="form-group">
             <label for="name">카테고리명:</label>
             <input type="text" id="name" class="form-control" th:field="*{categoryName}" required />

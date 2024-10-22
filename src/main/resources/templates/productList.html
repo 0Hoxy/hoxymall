@@ -33,7 +33,7 @@
             </td>
 
             <td>
-                <a th:href="@{/products/{id}(id=${product.productId})}" th:text="${product.productName}" style="text-decoration: none; color: inherit;"></a>
+                <a th:href="@{/admin/products/{id}(id=${product.productId})}" th:text="${product.productName}" style="text-decoration: none; color: inherit;"></a>
             </td>
             <td th:text="${product.description}">설명</td>
             <td th:text="${product.price}">가격</td>
@@ -42,12 +42,12 @@
             </td> <!-- 카테고리 수정 -->
 
             <td>
-                <form th:action="@{/products/update/{id}(id=${product.productId})}" method="get" style="display:inline;">
+                <form th:action="@{/admin/products/update/{id}(id=${product.productId})}" method="get" style="display:inline;">
                     <button type="submit" class="btn btn-warning btn-sm">수정</button>
                 </form>
             </td>
             <td>
-                <form th:action="@{/products/delete/{id}(id=${product.productId})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <form th:action="@{/admin/products/delete/{id}(id=${product.productId})}" method="post" style="display:inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                     <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                 </form>
             </td>
@@ -56,8 +56,8 @@
     </table>
 
     <div class="mt-3">
-        <a th:href="@{/products/add}" class="btn btn-primary">제품 등록</a>
-        <a th:href="@{/categories/add}" class="btn btn-primary">카테고리 등록</a>
+        <a th:href="@{/admin/products/add}" class="btn btn-primary">제품 등록</a>
+        <a th:href="@{/admin/categories/add}" class="btn btn-primary">카테고리 등록</a>
     </div>
 </div>
 </body>

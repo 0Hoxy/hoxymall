@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CategoryAlreadyExistsException.class)
     public String handleCategoryAlreadyExists(CategoryAlreadyExistsException ex, Model model) {
         model.addAttribute("errorMessage", ex.getMessage());
-        return "redirect:/categories/add"; // 카테고리 등록 페이지로 리다이렉트
+        return "redirect:/admin/categories/add"; // 카테고리 등록 페이지로 리다이렉트
     }
 }
 

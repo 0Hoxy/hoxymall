@@ -9,9 +9,9 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>상품 등록</h1>
-        <a href="/products" class="btn btn-secondary">상품 목록</a>
+        <a href="/admin/products" class="btn btn-secondary">상품 목록</a>
     </div>
-    <form th:action="@{/products/add}" th:object="${addProduct}" method="post" enctype="multipart/form-data"> <!-- enctype 추가 -->
+    <form th:action="@{/admin/products/add}" th:object="${addProduct}" method="post" enctype="multipart/form-data"> <!-- enctype 추가 -->
         <div class="form-group">
             <label for="name">상품명:</label>
             <input type="text" id="name" class="form-control" th:field="*{productName}" required />
