@@ -1,8 +1,5 @@
 package com.hoxy.hoxymall.config;
-
 import com.hoxy.hoxymall.oauth.PrincipalOauth2UserService;
-import com.hoxy.hoxymall.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -16,18 +13,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
 @Configuration
 @EnableWebSecurity
 @PropertySource("classpath:application-secret.properties")
+
 public class SecurityConfig {
 
     private final PrincipalOauth2UserService userService;
 
+    // 생성자 주입
     public SecurityConfig(@Lazy PrincipalOauth2UserService principalOauth2UserService) {
         this.userService = principalOauth2UserService;
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,26 +37,30 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .headers(headersConfigurer -> headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authz -> authz
-                                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/users/**").permitAll()
-//                        .requestMatchers("/products/**").hasRole("ADMIN")
-//                        .requestMatchers("/categories/**").hasRole("ADMIN")
-                                .requestMatchers(antMatcher("/admin/**")).hasRole("ADMIN")
-                                .requestMatchers(antMatcher("/user/**")).hasRole("USER")
-                                .anyRequest().authenticated()
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/users/new").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**").hasRole("USER")
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/products", true)
+                        .defaultSuccessUrl("/", true)
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .loginPage("/users/login")
-                        .failureUrl("/users/login")
+                        .failureUrl("/users/login?error=true") // 일반 로그인 실패 시 URL
                         .permitAll())
 
-                .oauth2Login(oauth2configurer -> oauth2configurer
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/users/login")
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(userService)));
+                                .userService(userService)) // 사용자 정의 userService 설정
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/users/login?oauth_error=true") // 소셜 로그인 실패 시 URL
+                );
+
         return http.build();
     }
+
 }

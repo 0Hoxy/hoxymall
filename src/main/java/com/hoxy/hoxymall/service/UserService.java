@@ -35,8 +35,19 @@ public class UserService {
         return modelMapper.map(savedUser, NewUserDTO.class);
     }
 
+    public NewUserDTO newAdmin(NewUserDTO newUserDTO) {
+        User user = modelMapper.map(newUserDTO, User.class);
+        user.setPassword(passwordEncoder.encode(newUserDTO.getPassword()));
+        user.setCreatedAt(LocalDateTime.now());
+        user.setRoles(Set.of(Role.ROLE_ADMIN));
+        User savedUser = userRepository.save(user);
+        return modelMapper.map(savedUser, NewUserDTO.class);
+
+    }
+
     public NewUserDTO updateUser(NewUserDTO newUserDTO, Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 아이디는 존재하지 않습니다"));
+        user.setName((newUserDTO.getName()));
         user.setEmail(newUserDTO.getEmail());
         user.setAddress(newUserDTO.getAddress());
         user.setPhoneNumber(newUserDTO.getPhoneNumber());
