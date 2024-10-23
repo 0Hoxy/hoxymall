@@ -1,5 +1,6 @@
 package com.hoxy.hoxymall.dto;
 
+import com.hoxy.hoxymall.entity.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,3 +17,4 @@ public class NewUserDTO {
     private String address;
     private LocalDateTime createdAt;
 }
+

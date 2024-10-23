@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 정보 업데이트</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="hidden"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>사용자 정보 업데이트</h1>
+    <form id="updateUserForm">
+        <!-- 사용자 ID를 hidden 필드로 추가 -->
+        <input type="hidden" id="userId" name="userId" value="">
+
+        <label for="name">이름:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">이메일:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="address">주소:</label>
+        <input type="text" id="address" name="address" required>
+
+        <label for="phoneNumber">전화번호:</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" required>
+
+        <input type="submit" value="업데이트">
+    </form>
+    <div class="error" id="errorMessage"></div>
+</div>
+
+<script>
+    // URL에서 사용자 ID 가져오기
+    function getUserIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        return id ? parseInt(id) : null;
+    }
+
+    // 페이지 로드 시 사용자 ID 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        const userId = getUserIdFromUrl();
+        if (userId) {
+            document.getElementById('userId').value = userId;
+        }
+    });
+
+    // 폼 제출 시 PUT 요청 보내기
+    document.getElementById("updateUserForm").onsubmit = async function(event) {
+        event.preventDefault(); // 기본 폼 제출 방지
+
+        const userId = document.getElementById('userId').value;
+
+        // 사용자 ID 유효성 검사
+        if (!userId) {
+            document.getElementById("errorMessage").innerText = "사용자 ID가 없습니다.";
+            return;
+        }
+
+        const userData = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            address: document.getElementById("address").value,
+            phoneNumber: document.getElementById("phoneNumber").value
+        };
+
+        try {
+            const response = await fetch(`/admin/${userId}`, {  // URL 패턴 수정
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+
+            if (response.ok) {
+                alert("사용자 정보가 업데이트되었습니다.");
+                // 성공 후 리다이렉션 또는 다른 처리
+                window.location.href = '/admin/users';  // 예시 리다이렉션
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "업데이트에 실패했습니다.");
+            }
+        } catch (error) {
+            document.getElementById("errorMessage").innerText = error.message;
+        }
+    };
+</script>
+</body>
+</html>

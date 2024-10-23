@@ -1,6 +1,5 @@
 package com.hoxy.hoxymall.service;
 
-import com.hoxy.hoxymall.entity.Role;
 import com.hoxy.hoxymall.entity.User;
 import com.hoxy.hoxymall.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
-    private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -34,8 +32,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // 사용자 권한 설정
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.toString()))  // Role 객체에서 권한 이름 가져오기
+                .map(role -> new SimpleGrantedAuthority(role.toString())) // Enum의 name() 메서드를 사용하여 권한을 설정
                 .collect(Collectors.toList());
+
+        // 권한 정보 로그 출력
+        authorities.forEach(authority -> log.info("사용자 권한: {}", authority.getAuthority()));
 
         return new org.springframework.security.core.userdetails.User( // userDetails import
                 user.getUsername(),
