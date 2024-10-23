@@ -37,13 +37,13 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .headers(headersConfigurer -> headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/users/new", "/admin/new","/users/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/users/new", "/admin/new", "/users/**").permitAll()
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
 //                      .requestMatchers("/admin/**").permitAll()
 //                      .requestMatchers("/users/**").hasRole("USER")
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .defaultSuccessUrl("/", true)
@@ -59,7 +59,8 @@ public class SecurityConfig {
                                 .userService(userService)) // 사용자 정의 userService 설정
                         .defaultSuccessUrl("/", true)
                         .failureUrl("/users/login?oauth_error=true") // 소셜 로그인 실패 시 URL
-                );
+                )
+                .httpBasic(Customizer.withDefaults()); //HTTP Basic 인증을 활성화
 
         return http.build();
     }
