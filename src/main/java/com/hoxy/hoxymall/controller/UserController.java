@@ -5,6 +5,7 @@ import com.hoxy.hoxymall.dto.GetUserDTO;
 import com.hoxy.hoxymall.dto.NewUserDTO;
 import com.hoxy.hoxymall.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

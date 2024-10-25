@@ -7,10 +7,13 @@ import com.hoxy.hoxymall.entity.Role;
 import com.hoxy.hoxymall.entity.User;
 import com.hoxy.hoxymall.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
@@ -73,7 +77,7 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
         return modelMapper.map(user, GetUserDTO.class);
     }
-
+    //PreAuthorize로 변경 수정하자
     public NewUserDTO updateAdmin(Long id, NewUserDTO newUserDTO) {
         // ID로 사용자 조회
         User user = userRepository.findById(id)
@@ -111,10 +115,28 @@ public class UserService {
         return modelMapper.map(userRepository.save(user), NewUserDTO.class);
     }
 
-
-
-    public NewUserDTO getUpdateAdminId(Long id) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public NewUserDTO getAdminId(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 유저는 찾을 수 없다."));
         return modelMapper.map(user, NewUserDTO.class);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<AllUserDTO> getAdminAll(Role role) {
+        List<User> users = userRepository.findByRoles(role);
+        return users.stream().map(user -> modelMapper.map(user, AllUserDTO.class))
+                .collect(Collectors.toList());
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public GetUserDTO getAdmin(Long id) {
+        User user = userRepository.findByUserIdAndRoles(id, Role.ROLE_ADMIN) //role 생성자를 미리 고정
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID를 가진 관리자를 찾을 수 없습니다: " + id));
+        return modelMapper.map(user, GetUserDTO.class);
+
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deleteAdmin(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
+        userRepository.delete(user);
     }
 }
